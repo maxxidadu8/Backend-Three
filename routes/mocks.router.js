@@ -22,7 +22,7 @@ mocksRouter.post('/generateData', async (req, res) => {
       generatedUsers.push({
         name: faker.person.fullName(),
         email: faker.internet.email(),
-        password: faker.internet.password(),  
+        password: faker.internet.password(),  // Hasheado con bcrypt en producción
         age: faker.number.int({ min: 18, max: 80 }),
         createdAt: new Date(),
       });
@@ -37,7 +37,7 @@ mocksRouter.post('/generateData', async (req, res) => {
         name: faker.animal.dog(),
         breed: faker.animal.type(),
         age: faker.number.int({ min: 1, max: 15 }),
-        owner: faker.person.fullName(), 
+        owner: faker.person.fullName(), // Cambiar a una relación real en producción
         createdAt: new Date(),
       });
     }
@@ -71,4 +71,25 @@ mocksRouter.get('/pets', async (req, res) => {
   }
 });
 
+// Endpoint para eliminar todos los usuarios
+mocksRouter.delete('/users', async (req, res) => {
+  try {
+    await User.deleteMany({});
+    res.status(200).json({ message: "Todos los usuarios han sido eliminados." });
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar los usuarios", error: error.message });
+  }
+});
+
+// Endpoint para eliminar todas las mascotas
+mocksRouter.delete('/pets', async (req, res) => {
+  try {
+    await Pet.deleteMany({});
+    res.status(200).json({ message: "Todas las mascotas han sido eliminadas." });
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar las mascotas", error: error.message });
+  }
+});
+
 module.exports = mocksRouter;
+
